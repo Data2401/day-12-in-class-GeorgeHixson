@@ -49,14 +49,21 @@ New skill: Use `.before = 1` as an argument to `mutate` to add the new variables
 4. If you haven't already, do the last 2 steps in a single statement using the pipe operator. 
 
 ```{r}
-
+my_flights %>% 
+  mutate(gain = dep_delay - arr_delay,
+         speed = distance / air_time,
+         .before = 1) %>% 
+  arrange(-speed)
 ```
 
 
 5. On average, did flights gain or lose time? Note: use the `na.rm = TRUE` argument to remove NA values from your calc
 
 ```{r}
+mean(my_flights$gain) 
+mean(my_flights$gain, na.rm = T)
 
+my_flights %>% pull(gain) %>% mean(na.rm = T)
 
 ```
 
@@ -64,7 +71,7 @@ New skill: Use `.before = 1` as an argument to `mutate` to add the new variables
 6. Create a data.frame of flights with a destination of Hobby Airport (Airport code 'HOU'), only including the origin, destination, and the "made_up_time" column you just created
 
 ```{r}
-
+Hobby <- my_flights %>% 
 ```
 
 

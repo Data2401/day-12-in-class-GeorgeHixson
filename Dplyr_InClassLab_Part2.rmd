@@ -79,18 +79,27 @@ Hobby <- my_flights %>%
 
 
 ```{r}
-
+mean(Hobby$gain, na.rm = T)
 
 ```
 
   
 ## Exercise: 
+```{r}
+head(my_flights)
+```
 
 
 Go back to our flights exercise data. Consider flights from JFK to SEA. What was the average, min, and max air time of those flights? Use pipes to answer this question in one statement (without showing any other data)!
 
 ```{r}
-
+my_flights %>% 
+  filter(origin == 'JFK', dest == 'SEA') %>% 
+  summarise(
+    avg_airtime = mean(air_time, na.rm = T),
+    min_airtime = min(air_time, na.rm = T),
+    max_airtime = max(air_time, na.rm = T)
+  )
 
 ```
 
@@ -98,20 +107,25 @@ Consider flights coming into Houston (HOU and IAH). What is the mean arrival del
 
 ```{r}
 
+my_flights %>% 
+  filter(dest == 'HOU' | dest == 'IAH') %>% 
+  group_by(origin) %>% 
+  summarize(mean_arrdelay = mean(arr_delay, na.rm = TRUE))
+
 
 ```
 
 Find the flights that are most delayed upon departure from each origin.
 
 ```{r}
-
+my_flights %>% group_by(origin) %>% slice_max(dep_delay, n = 1) %>% select(origin, dep_delay, everything())
 
 ```
 
 Getting ready for next class: look at all the different values for the  airport.
 
 ```{r}
-
+my_flights %>% count(dest)
 
 ```
 
@@ -134,7 +148,9 @@ We're going to use this to practice some data wrangling with `dplyr`.
 How many characters are from each planet?
 
 ```{r}
-
+starwars2 <- starwars
+starwars2 %>% count(homeworld, sort = TRUE)
+  
 
 
 ```
@@ -142,13 +158,13 @@ How many characters are from each planet?
 If you wanted to arrange this in descending order, what would you add to the pipe? 
 
 ```{r}
-
+starwars2 %>% count(homeworld) %>% arrange(desc(n))
 ```
 
 Find the average height for each eye color. You might find some of the answers to be strange, but keep going! 
 
 ```{r}
-
+starwars2 %>% group_by(eye_color) %>% summarise(avg_height = mean(height))
 
 ```
 
@@ -156,7 +172,7 @@ So.... What's with the NAs? Filter down to just brown eyes find out what's going
 
 
 ```{r}
-
+starwars2 %>% filter(eye_color == 'brown', is.na(height))
 
 ```
 
@@ -164,7 +180,7 @@ Okay, so we have missing data here. Try summarising with `na.omit(height)` inste
 
 
 ```{r}
-
+starwars2 %>% group_by(eye_color) %>% summarise(avg_height = mean(height, na.rm = T))
 
 ```
 
@@ -172,6 +188,6 @@ So, who is the tallest male? How many blue eyed women are there? How many gender
 
 
 ```{r}
-
+starwars %>% group_by(sex == 'male') %>% slice_max(height)
 
 ```
